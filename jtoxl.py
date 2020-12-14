@@ -6,14 +6,15 @@ import os
 import math
 from openpyxl import Workbook
 
+
 wb = Workbook()
 ws = wb.active
 arg = sys.argv[1]
 #pname = os.path.join(os.getcwd(),arg+'.pdf')
 #pdfobj = PyPDF2.PdfFileReader(pname)
 # arg = sys.argv[1]
-fname = "D:\\Python\\untitled1\\"
-fname += arg + ".json"
+#fname = "D:\\Python\\untitled1\\"
+fname = os.getcwd()+'\\'+arg + ".json"
 
 with open(fname, 'r') as f:
   distros_dict = json.load(f)
@@ -91,22 +92,25 @@ for row in dk.index:
   z = int(dk['Page'][row])
 
   str1 = dk.query('line==@x and pos==@y and Page==@z')['Text'].iloc[0]
-  ny = int(dk['Left'][row] * 12.5)
+  ny = int(dk['Left'][row] * 15)
   ny = math.trunc(ny)
+
 
   if ny <=0:
     ny = 1
   else:
     ny +=1
     pstr1 = str1
-  # if py == ny:
-  #  ln = dk['line'][row]
-  #  #print(pstr1,str1)
-  #  ny += 1
-  # else:
-  #   py = ny
-  #   if dk['line'][row] == ln:
-  #     ny += 1
+
+  if py == ny:
+   #ln = dk['line'][row]
+   #print(pstr1,str1)
+   ny += 1
+  else:
+    py = ny
+    if dk['line'][row] == ln:
+      ny += 1
+
   dk._set_value(row,['pos'],ny)
 
   if row > 0 and dk['Page'][row] > dk['Page'][row-1]:
@@ -114,7 +118,7 @@ for row in dk.index:
   ws.cell(row=x, column=ny).value = str1
 
 wb.remove(wb["Sheet"])
-wb.save('D:\\Python\\untitled1\\'+arg+'.xlsx')
+wb.save(os.getcwd()+'\\'+arg+'.xlsx')
 
 
 
